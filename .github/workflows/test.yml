@@ -1,0 +1,29 @@
+# GitHub Actions configuration for
+# DevPhilB/sails-test-github
+# Test
+name: Test workflow
+# Trigger on push
+on: push
+
+# GitHub Actions jobs
+jobs:
+  # Test configuration
+  test:
+    name: Run tests
+
+    # Linux VM
+    runs-on: ubuntu-latest
+    # Node.js Docker image for VM
+    container:
+      image: node:erbium
+    # All steps for test
+    steps:
+      - name: Run ESLint & Jest
+      # Checkout branch to VM
+        uses: actions/checkout@v1
+      # Run Jest
+        run: |
+            cd sails-test
+            npm install
+            npm run test
+  

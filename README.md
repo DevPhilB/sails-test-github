@@ -1,2 +1,2 @@
 # sails-test-github
-Sails.js & Github Actions
+Sails.js & GitHub Actions
