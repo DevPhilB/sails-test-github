@@ -1,8 +1,8 @@
 # GitHub Actions configuration for
 # DevPhilB/sails-test-github
-# Test
 name: Test workflow
-# Trigger on push
+
+# Trigger on push to any branch
 on: push
 
 # GitHub Actions jobs
@@ -18,12 +18,11 @@ jobs:
       image: node:erbium
     # All steps for test
     steps:
-      - name: Run ESLint & Jest
-      # Checkout branch to VM
+      - name: Checkout branch to VM
         uses: actions/checkout@v1
-      # Run Jest
+      - name: Run ESLint & Jest
         run: |
-            cd sails-test
-            npm install
-            npm run test
+          cd sails-test
+          npm install
+          npm run test
   

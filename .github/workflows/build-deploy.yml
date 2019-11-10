@@ -1,0 +1,58 @@
+# GitHub Actions configuration for
+# DevPhilB/sails-test-github
+name: Build & Deploy workflow
+
+# Trigger only on pushes to master
+on:
+  push:
+      branches:
+        - master
+
+# Github Actions jobs
+jobs:
+  # Test configuration
+  # Duplicate code from test.yml because
+  # references to other workflows are not possible!
+  test:
+    name: Run tests
+
+    # Linux VM
+    runs-on: ubuntu-latest
+    # Node.js Docker image for VM
+    container:
+      image: node:erbium
+    # All steps for test
+    steps:
+      - name: Checkout branch to VM
+        uses: actions/checkout@v1
+      - name: Run ESLint & Jest
+        run: |
+          cd sails-test
+          npm install
+          npm run test
+
+  # Build and deploy configuration
+  build-deploy:
+    name: Build Docker image and deploy it to Docker Hub
+      needs: test
+
+    # Linux VM
+    runs-on: ubuntu-latest
+
+    # All steps for build
+    steps:
+      - name: Checkout branch to VM
+        uses: actions/checkout@v1
+
+      # Github Actions can't generate build numbers currently!
+      # We use https://github.com/einaregilsson/build-number here   
+      - name: Generate build number
+        uses: einaregilsson/build-number@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image on VM and push it to Docker Hub
+        run: |
+          docker build -t tvsjsdock/sails-test:0.$BUILD_NUMBER.0 .
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+          docker push tvsjsdock/sails-test:0.$BUILD_NUMBER.0
