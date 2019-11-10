@@ -34,7 +34,7 @@ jobs:
   # Build and deploy configuration
   build-deploy:
     name: Build Docker image and deploy it to Docker Hub
-      needs: test
+    needs: test
 
     # Linux VM
     runs-on: ubuntu-latest
